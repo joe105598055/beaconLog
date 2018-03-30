@@ -28,9 +28,9 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 
     private LollipopScanCallback lollipopScanCallback;
     private KitkatScanCallback kitkatLeScanCallback;
-
     private BluetoothAdapter mBluetoothAdapter;
     private ScanFilter.Builder _filterBuilder;
+    private long lastScannedTime = 0;
 
     public BeaconScanCallback(Context ctx, iBeaconScanCallback scanCallback) {
 
@@ -44,6 +44,8 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
     public interface iBeaconScanCallback {
 
         void scannedBeacons(BeaconObject beaconObject);
+
+        void getNearestBeacon(BeaconObject beaconObject);
 
     }
 
@@ -114,8 +116,9 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
      */
     @Override
     public void kitkat_beaconScanned(BeaconObject beaconObject) {
-
+            syncBeacons.getIns().addBeacon(beaconObject);
             scanCallback.scannedBeacons(beaconObject);
+            returnCallback();
 
     }
 
@@ -127,7 +130,10 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
     @Override
     public void lollipop_beaconScanned(BeaconObject beaconObject) {
 
+        syncBeacons.getIns().addBeacon(beaconObject);
         scanCallback.scannedBeacons(beaconObject);
+        returnCallback();
+
 
     }
 
@@ -161,5 +167,81 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 //        return scanning;
 //
 //    }
+    private  void returnCallback(){
+        if (!canReturnCallback()){
+//            System.out.println("[delay]");
+            return;
+        }
+//        System.out.println("------[return callback]");
+//        System.out.println("size" + syncBeacons.getIns().getBeacons().size());
+//        System.out.println("[Nearest] = " + syncBeacons.getIns().getNearest().minor + "-" + syncBeacons.getIns().getNearest().major + "******" + syncBeacons.getIns().getNearest().rssi);
+        System.out.println("[all beacon]");
+        for(int i = 0 ; i<syncBeacons.getIns().getBeacons().size(); i++){
+            System.out.println("beacon: " + syncBeacons.getIns().getBeacons().get(i).major+ "-" +syncBeacons.getIns().getBeacons().get(i).minor + ", rssi: "+syncBeacons.getIns().getBeacons().get(i).rssi);
+        }
+        scanCallback.getNearestBeacon(syncBeacons.getIns().getNearest());
+        syncBeacons.getIns().removeAllBeacons();
+
+    }
+    private static class syncBeacons {
+
+        private static syncBeacons ins = null;
+
+        private ArrayList<BeaconObject> beacons = new ArrayList<>();
+
+        public static synchronized syncBeacons getIns() {
+            if (ins == null)
+                ins = new syncBeacons();
+            return ins;
+        }
+
+        public ArrayList<BeaconObject> getBeacons() {
+            return (ArrayList<BeaconObject>) beacons.clone();
+        }
+
+        public synchronized void addBeacon(BeaconObject beaconObject) {
+            for (int i = 0; i < beacons.size(); i++) {
+                if (beacons.get(i).mac.equals(beaconObject.mac)) {
+                    beacons.remove(i);
+                    beacons.add(i, beaconObject);
+                    return;
+                }
+            }
+
+            beacons.add(beaconObject);
+        }
+
+        public synchronized void removeAllBeacons() {
+            beacons.clear();
+        }
+
+        public synchronized BeaconObject getNearest() {
+            int maxRSSI = -1000;
+            BeaconObject nearest = null;
+            for (BeaconObject object : beacons) {
+                if (maxRSSI < object.rssi) {
+                    nearest = object;
+                    maxRSSI = object.rssi;
+                }
+            }
+
+            return nearest;
+        }
+    }
+
+    private boolean canReturnCallback() {
+        long currentScannedTime = System.currentTimeMillis();
+        if (lastScannedTime == 0) {
+            lastScannedTime = currentScannedTime;
+            return false;
+        }
+
+        if (currentScannedTime - lastScannedTime > 300) { /**   delay 0.3s */
+            lastScannedTime = currentScannedTime;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

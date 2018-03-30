@@ -150,6 +150,11 @@ public class ChooseBeaconActivity extends AppCompatActivity implements BeaconSca
     }
 
     @Override
+    public void getNearestBeacon(BeaconObject beaconObject) {
+
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();

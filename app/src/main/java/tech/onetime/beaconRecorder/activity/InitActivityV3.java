@@ -172,7 +172,7 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
 
         if(currentBeaconObject == null) {
             Toast.makeText(this, "You did not choose a USBeacon to scan.", Toast.LENGTH_SHORT).show();
-            return false;
+//            return false; //keep going
         }
 
         if (_beaconCallback != null)
@@ -194,15 +194,14 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
     @UiThread
     public void scannedBeacons(BeaconObject beaconObject) {
 
-        int beaconObject_rssi = beaconObject.rssi;
+//        int beaconObject_rssi = beaconObject.rssi;
 
-//        _scanResultQueue.offer(beaconObject_rssi);
-        _scanResultQueue.offer(beaconObject);
-        rssi.setText(Integer.toString(beaconObject_rssi));
+//        _scanResultQueue.offer(beaconObject);
+//        rssi.setText(Integer.toString(beaconObject_rssi));
 
-        times.setText(Integer.toString(++_scanTime));
+//        times.setText(Integer.toString(++_scanTime));
 
-        if (_scanTime == 100) {
+        if (_scanTime == 10) {
 
             stopScan.setVisibility(View.GONE);
 
@@ -215,6 +214,18 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
 
         }
 
+    }
+    private int _scanTimeNear = 0;
+
+    @Override
+    @UiThread
+    public void getNearestBeacon(BeaconObject beaconObject) {
+        times.setText(Integer.toString(++_scanTime));
+        distance.setText(Integer.toString(++_scanTimeNear));
+        System.out.println("[getNearestBeacon]" + beaconObject.getMajorMinorString());
+        rssi.setText(Integer.toString(beaconObject.rssi));
+        beacon.setText(beaconObject.getMajorMinorString());
+        _scanResultQueue.offer(beaconObject);
     }
 
     @Override
