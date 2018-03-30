@@ -155,6 +155,11 @@ public class ChooseBeaconActivity extends AppCompatActivity implements BeaconSca
     }
 
     @Override
+    public void getCurrentRoundBeacon(ArrayList<BeaconObject> BeaconObjectArray) {
+
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import tech.onetime.beaconRecorder.schema.BeaconObject;
@@ -35,7 +36,9 @@ public class ExcelBuilder {
     private static String _currentSheetName = "1M";
     private static int _currentRowIndex = 1;
     private static int _currentCellIndex = 1;
-    public static int rowIndex = 0;
+    public static int rowIndex = 1;
+    public static int rowRoundIndex = 1;
+
     public static int colIndex = 0;
     private static int[] distances = {1, 2, 3, 5, 8, 13, 20, 30, 40, 50};
 
@@ -46,6 +49,13 @@ public class ExcelBuilder {
             _wb.createSheet("RSSI");
             _wb.createSheet("Beacon");
         }
+        Sheet RSSISheet = _wb.getSheet("RSSI");
+        RSSISheet.createRow(0).createCell(0).setCellValue("winner");
+        RSSISheet.getRow(0).createCell(1).setCellValue("rssi");
+        RSSISheet.getRow(0).createCell(3).setCellValue("(0,0)");
+        RSSISheet.getRow(0).createCell(4).setCellValue("(0,5)");
+        RSSISheet.getRow(0).createCell(5).setCellValue("(8,0)");
+        RSSISheet.getRow(0).createCell(6).setCellValue("(8,5)");
 
     }
 
@@ -58,13 +68,34 @@ public class ExcelBuilder {
     public static void setCellByRowInOrder(BeaconObject content) {
 
         Sheet RSSISheet = _wb.getSheet("RSSI");
-        Sheet BeaconSheet = _wb.getSheet("Beacon");
-
-        RSSISheet.createRow(rowIndex).createCell(colIndex).setCellValue(content.rssi);
-        BeaconSheet.createRow(rowIndex).createCell(colIndex).setCellValue("[" + content.major + "," + content.minor + "]");
+        RSSISheet.createRow(rowIndex).createCell(colIndex).setCellValue("[" + content.major + "," + content.minor + "]");
+        RSSISheet.getRow(rowIndex).createCell(1).setCellValue(content.rssi);
         rowIndex++;
     }
 
+    public static void setRoundInOrder(ArrayList<BeaconObject> content){
+        System.out.println("[setRoundInOrder]");
+        Sheet RSSISheet = _wb.getSheet("RSSI");
+        for(int j=0;j < content.size() ; j++){
+            BeaconObject beaconObject = content.get(j);
+            System.out.println(beaconObject.getMajorMinorString() + " , " + beaconObject.rssi);
+            switch (beaconObject.getMajorMinorString()){
+                case "(0,0)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(3).setCellValue(beaconObject.rssi);
+                    break;
+                case "(0,5)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(4).setCellValue(beaconObject.rssi);
+                    break;
+                case "(8,0)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(5).setCellValue(beaconObject.rssi);
+                    break;
+                case "(8,5)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(6).setCellValue(beaconObject.rssi);
+                    break;
+            }
+        }
+        rowRoundIndex++;
+    }
     public static boolean saveExcelFile(Context context, String fileName) {
 
         // check if available and not read only

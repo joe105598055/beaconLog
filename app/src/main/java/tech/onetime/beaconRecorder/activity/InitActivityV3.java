@@ -20,6 +20,7 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -37,7 +38,7 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
     private BeaconScanCallback _beaconCallback;
 
     private int _scanTime = 0;
-
+    private ArrayList<ArrayList<BeaconObject>> eachRoundBeacons = new ArrayList<ArrayList<BeaconObject>>();
     private Queue<BeaconObject> _scanResultQueue = new LinkedList<>();
 
     static final int SETTING_REQUEST = 1;
@@ -126,13 +127,26 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
     void doSaveResult() {
 
         Log.d(TAG, "Saving result");
-
+//
+//        for(int i=0 ; i<eachRoundBeacons.size() ; i++){
+//            for(int j=0;j < eachRoundBeacons.get(i).size() ; j++){
+//                BeaconObject beaconObject = eachRoundBeacons.get(i).get(j);
+//                System.out.println("<" + beaconObject.getMajorMinorString() + "> , " + beaconObject.rssi);
+//            }
+//            System.out.println("-----------");
+//        }
         ExcelBuilder.initExcel();
-
+        System.out.println("---" + _scanResultQueue.size());
+        System.out.println("***" + eachRoundBeacons.size());
         while(!_scanResultQueue.isEmpty()) {
             ExcelBuilder.setCellByRowInOrder(_scanResultQueue.poll());
         }
-
+        int index = 0;
+        while(index!=eachRoundBeacons.size()){
+            ExcelBuilder.setRoundInOrder(eachRoundBeacons.get(index));
+            eachRoundBeacons.remove(index);
+            index++;
+        }
         ExcelBuilder.saveExcelFile(this, "temp");
 
         nextState();
@@ -226,6 +240,20 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
         rssi.setText(Integer.toString(beaconObject.rssi));
         beacon.setText(beaconObject.getMajorMinorString());
         _scanResultQueue.offer(beaconObject);
+    }
+
+    @Override
+    public void getCurrentRoundBeacon(ArrayList<BeaconObject> BeaconObjectArray) {
+        eachRoundBeacons.add(BeaconObjectArray);
+
+//        for(int i=0 ; i<eachRoundBeacons.size() ; i++){
+//            for(int j=0;j < eachRoundBeacons.get(i).size() ; j++){
+//                BeaconObject beaconObject = eachRoundBeacons.get(i).get(j);
+//                System.out.println("<" + beaconObject.getMajorMinorString() + "> , " + beaconObject.rssi);
+//            }
+//            System.out.println("-----------");
+//        }
+
     }
 
     @Override

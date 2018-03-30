@@ -47,6 +47,8 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 
         void getNearestBeacon(BeaconObject beaconObject);
 
+        void getCurrentRoundBeacon(ArrayList<BeaconObject> BeaconObjectArray);
+
     }
 
     public void startScan() {
@@ -172,14 +174,12 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 //            System.out.println("[delay]");
             return;
         }
-//        System.out.println("------[return callback]");
-//        System.out.println("size" + syncBeacons.getIns().getBeacons().size());
-//        System.out.println("[Nearest] = " + syncBeacons.getIns().getNearest().minor + "-" + syncBeacons.getIns().getNearest().major + "******" + syncBeacons.getIns().getNearest().rssi);
-        System.out.println("[all beacon]");
-        for(int i = 0 ; i<syncBeacons.getIns().getBeacons().size(); i++){
-            System.out.println("beacon: " + syncBeacons.getIns().getBeacons().get(i).major+ "-" +syncBeacons.getIns().getBeacons().get(i).minor + ", rssi: "+syncBeacons.getIns().getBeacons().get(i).rssi);
-        }
+//        System.out.println("[all beacon]");
+//        for(int i = 0 ; i<syncBeacons.getIns().getBeacons().size(); i++){
+//            System.out.println("beacon: " + syncBeacons.getIns().getBeacons().get(i).major+ "-" +syncBeacons.getIns().getBeacons().get(i).minor + ", rssi: "+syncBeacons.getIns().getBeacons().get(i).rssi);
+//        }
         scanCallback.getNearestBeacon(syncBeacons.getIns().getNearest());
+        scanCallback.getCurrentRoundBeacon(syncBeacons.getIns().getBeacons());
         syncBeacons.getIns().removeAllBeacons();
 
     }
@@ -236,7 +236,7 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
             return false;
         }
 
-        if (currentScannedTime - lastScannedTime > 300) { /**   delay 0.3s */
+        if (currentScannedTime - lastScannedTime > 100) { /**   delay 0.3s */
             lastScannedTime = currentScannedTime;
             return true;
         } else {
