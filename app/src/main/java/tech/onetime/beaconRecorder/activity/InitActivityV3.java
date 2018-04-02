@@ -141,11 +141,10 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
         while(!_scanResultQueue.isEmpty()) {
             ExcelBuilder.setCellByRowInOrder(_scanResultQueue.poll());
         }
-        int index = 0;
-        while(index!=eachRoundBeacons.size()){
-            ExcelBuilder.setRoundInOrder(eachRoundBeacons.get(index));
-            eachRoundBeacons.remove(index);
-            index++;
+        while(eachRoundBeacons.size() != 0 ){
+            System.out.println("eachRoundBeacons" + eachRoundBeacons.size());
+            ExcelBuilder.setRoundInOrder(eachRoundBeacons.get(0));
+            eachRoundBeacons.remove(0);
         }
         ExcelBuilder.saveExcelFile(this, "temp");
 
@@ -244,7 +243,9 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
 
     @Override
     public void getCurrentRoundBeacon(ArrayList<BeaconObject> BeaconObjectArray) {
+        System.out.println("[in getCurrentRoundBeacon] = " + BeaconObjectArray.size());
         eachRoundBeacons.add(BeaconObjectArray);
+        System.out.println("[eachRoundBeacons Size]" + eachRoundBeacons.size());
 
 //        for(int i=0 ; i<eachRoundBeacons.size() ; i++){
 //            for(int j=0;j < eachRoundBeacons.get(i).size() ; j++){

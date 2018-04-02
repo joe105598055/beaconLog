@@ -200,6 +200,7 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
         }
 
         public synchronized void addBeacon(BeaconObject beaconObject) {
+//            System.out.println("[beaconObject]" + beaconObject.getMajorMinorString());
             for (int i = 0; i < beacons.size(); i++) {
                 if (beacons.get(i).mac.equals(beaconObject.mac)) {
                     beacons.remove(i);
@@ -212,7 +213,8 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
         }
 
         public synchronized void removeAllBeacons() {
-            beacons.clear();
+            if(beacons.size()==4)
+                beacons.clear();
         }
 
         public synchronized BeaconObject getNearest() {
