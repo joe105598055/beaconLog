@@ -33,9 +33,6 @@ public class ExcelBuilder {
 
     private static Workbook _wb = null;
 
-    private static String _currentSheetName = "1M";
-    private static int _currentRowIndex = 1;
-    private static int _currentCellIndex = 1;
     public static int rowIndex = 1;
     public static int rowRoundIndex = 1;
 
@@ -54,8 +51,13 @@ public class ExcelBuilder {
         RSSISheet.getRow(0).createCell(1).setCellValue("rssi");
         RSSISheet.getRow(0).createCell(3).setCellValue("(0,0)");
         RSSISheet.getRow(0).createCell(4).setCellValue("(0,5)");
-        RSSISheet.getRow(0).createCell(5).setCellValue("(8,0)");
-        RSSISheet.getRow(0).createCell(6).setCellValue("(8,5)");
+        RSSISheet.getRow(0).createCell(5).setCellValue("(0,8)");
+        RSSISheet.getRow(0).createCell(6).setCellValue("(5,0)");
+        RSSISheet.getRow(0).createCell(7).setCellValue("(5,5)");
+        RSSISheet.getRow(0).createCell(8).setCellValue("(5,8)");
+        RSSISheet.getRow(0).createCell(9).setCellValue("(8,0)");
+        RSSISheet.getRow(0).createCell(10).setCellValue("(8,5)");
+        RSSISheet.getRow(0).createCell(11).setCellValue("(8,8)");
 
     }
 
@@ -86,11 +88,26 @@ public class ExcelBuilder {
                 case "(0,5)":
                     RSSISheet.getRow(rowRoundIndex).createCell(4).setCellValue(beaconObject.rssi);
                     break;
-                case "(8,0)":
+                case "(0,8)":
                     RSSISheet.getRow(rowRoundIndex).createCell(5).setCellValue(beaconObject.rssi);
                     break;
-                case "(8,5)":
+                case "(5,0)":
                     RSSISheet.getRow(rowRoundIndex).createCell(6).setCellValue(beaconObject.rssi);
+                    break;
+                case "(5,5)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(7).setCellValue(beaconObject.rssi);
+                    break;
+                case "(5,8)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(8).setCellValue(beaconObject.rssi);
+                    break;
+                case "(8,0)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(9).setCellValue(beaconObject.rssi);
+                    break;
+                case "(8,5)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(10).setCellValue(beaconObject.rssi);
+                    break;
+                case "(8,8)":
+                    RSSISheet.getRow(rowRoundIndex).createCell(11).setCellValue(beaconObject.rssi);
                     break;
             }
         }

@@ -164,20 +164,13 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 
     }
 
-//    public boolean isScanning() {
-//
-//        return scanning;
-//
-//    }
+
     private  void returnCallback(){
         if (!canReturnCallback()){
 //            System.out.println("[delay]");
             return;
         }
-//        System.out.println("[all beacon]");
-//        for(int i = 0 ; i<syncBeacons.getIns().getBeacons().size(); i++){
-//            System.out.println("beacon: " + syncBeacons.getIns().getBeacons().get(i).major+ "-" +syncBeacons.getIns().getBeacons().get(i).minor + ", rssi: "+syncBeacons.getIns().getBeacons().get(i).rssi);
-//        }
+
         scanCallback.getNearestBeacon(syncBeacons.getIns().getNearest());
         scanCallback.getCurrentRoundBeacon(syncBeacons.getIns().getBeacons());
         syncBeacons.getIns().removeAllBeacons();
@@ -200,7 +193,6 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
         }
 
         public synchronized void addBeacon(BeaconObject beaconObject) {
-//            System.out.println("[beaconObject]" + beaconObject.getMajorMinorString());
             for (int i = 0; i < beacons.size(); i++) {
                 if (beacons.get(i).mac.equals(beaconObject.mac)) {
                     beacons.remove(i);

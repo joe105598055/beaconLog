@@ -127,22 +127,14 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
     void doSaveResult() {
 
         Log.d(TAG, "Saving result");
-//
-//        for(int i=0 ; i<eachRoundBeacons.size() ; i++){
-//            for(int j=0;j < eachRoundBeacons.get(i).size() ; j++){
-//                BeaconObject beaconObject = eachRoundBeacons.get(i).get(j);
-//                System.out.println("<" + beaconObject.getMajorMinorString() + "> , " + beaconObject.rssi);
-//            }
-//            System.out.println("-----------");
-//        }
+
         ExcelBuilder.initExcel();
-        System.out.println("---" + _scanResultQueue.size());
-        System.out.println("***" + eachRoundBeacons.size());
+
         while(!_scanResultQueue.isEmpty()) {
             ExcelBuilder.setCellByRowInOrder(_scanResultQueue.poll());
         }
+
         while(eachRoundBeacons.size() != 0 ){
-            System.out.println("eachRoundBeacons" + eachRoundBeacons.size());
             ExcelBuilder.setRoundInOrder(eachRoundBeacons.get(0));
             eachRoundBeacons.remove(0);
         }
@@ -214,7 +206,7 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
 
 //        times.setText(Integer.toString(++_scanTime));
 
-        if (_scanTime == 10) {
+        if (_scanTime == 100) {
 
             stopScan.setVisibility(View.GONE);
 
