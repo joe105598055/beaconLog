@@ -160,6 +160,11 @@ public class ChooseBeaconActivity extends AppCompatActivity implements BeaconSca
     }
 
     @Override
+    public void testInterface() {
+
+    }
+
+    @Override
     public void onResume() {
 
         super.onResume();

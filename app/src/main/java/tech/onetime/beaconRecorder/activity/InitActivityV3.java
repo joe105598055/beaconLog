@@ -10,13 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -75,7 +74,7 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
         Log.d(TAG, "Stop scan");
 
         _beaconCallback.stopScan();
-
+        _beaconCallback.closeTimerTask();
         stopScan.setVisibility(View.GONE);
 
         startScan.setVisibility(View.VISIBLE);
@@ -202,11 +201,10 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
 //        int beaconObject_rssi = beaconObject.rssi;
 
 //        _scanResultQueue.offer(beaconObject);
-//        rssi.setText(Integer.toString(beaconObject_rssi));
 
 //        times.setText(Integer.toString(++_scanTime));
 
-        if (_scanTime == 100) {
+        if (_scanTime >= 100) {
 
             stopScan.setVisibility(View.GONE);
 
@@ -216,6 +214,7 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
             rssi.setTextColor(getResources().getColor(R.color.red_500));
 
             _beaconCallback.stopScan();
+            _beaconCallback.closeTimerTask();
 
         }
 
@@ -247,6 +246,11 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
 //            System.out.println("-----------");
 //        }
 
+    }
+
+    @Override
+    public void testInterface() {
+        Log.d(TAG, "[testInterface]");
     }
 
     @Override
