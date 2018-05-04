@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
     @ViewById TextView times;
     @ViewById TextView distance;
     @ViewById TextView txPower;
+    @ViewById EditText fileName;
 
     @Click void startScan() {
 
@@ -96,7 +98,14 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
         startScan.setVisibility(View.VISIBLE);
         setting.setVisibility(View.VISIBLE);
 
-//        while(!_scanResultQueue.isEmpty()) _scanResultQueue.poll();
+        while(!_scanResultQueue.isEmpty()) _scanResultQueue.poll();
+        Log.d(TAG, "eachRoundBeacons.clear()**************************" + eachRoundBeacons.size());
+
+        _beaconCallback.clearAllbeacons();
+        if(eachRoundBeacons.size() != 0){
+            Log.d(TAG, "eachRoundBeacons.clear()");
+            eachRoundBeacons.clear();
+        }
 
     }
 
@@ -118,13 +127,14 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
 
         storeResult.setVisibility(View.GONE);
 
-        cleanUp.performClick();
+//        cleanUp.performClick();
 
     }
 
     @Background
     void doSaveResult() {
 
+        String fName = fileName.getText().toString();
         Log.d(TAG, "Saving result");
 
         ExcelBuilder.initExcel();
@@ -137,7 +147,8 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
             ExcelBuilder.setRoundInOrder(eachRoundBeacons.get(0));
             eachRoundBeacons.remove(0);
         }
-        ExcelBuilder.saveExcelFile(this, "temp");
+//        ExcelBuilder.saveExcelFile(this, "temp");
+        ExcelBuilder.saveExcelFile(this,fName);
 
         nextState();
 
@@ -198,13 +209,44 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
     @UiThread
     public void scannedBeacons(BeaconObject beaconObject) {
 
-//        int beaconObject_rssi = beaconObject.rssi;
+//        if (_scanTime >= 21) {
+//
+//            stopScan.setVisibility(View.GONE);
+//
+//            storeResult.setVisibility(View.VISIBLE);
+//            cleanUp.setVisibility(View.VISIBLE);
+//
+//            rssi.setTextColor(getResources().getColor(R.color.red_500));
+//
+//            _beaconCallback.stopScan();
+//            _beaconCallback.closeTimerTask();
+//
+//        }
 
-//        _scanResultQueue.offer(beaconObject);
+    }
 
-//        times.setText(Integer.toString(++_scanTime));
+    @Override
+    @UiThread
+    public void getNearestBeacon(BeaconObject beaconObject) {
+        if(beaconObject!=null){
+            System.out.println("[getNearestBeacon]" + beaconObject.getMajorMinorString());
+            rssi.setText(Integer.toString(beaconObject.rssi));
+            beacon.setText(beaconObject.getMajorMinorString());
+        }
+        _scanResultQueue.offer(beaconObject);
+    }
 
-        if (_scanTime >= 100) {
+    @Override
+    @UiThread
+    public void getCurrentRoundBeacon(ArrayList<BeaconObject> BeaconObjectArray) {
+        times.setText(Integer.toString(++_scanTime));
+
+        System.out.println("[in getCurrentRoundBeacon] = " + BeaconObjectArray.size());
+        if(BeaconObjectArray.size()!=0){
+            eachRoundBeacons.add(BeaconObjectArray);
+        }
+
+        if (_scanTime >= 21) {
 
             stopScan.setVisibility(View.GONE);
 
@@ -217,34 +259,6 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
             _beaconCallback.closeTimerTask();
 
         }
-
-    }
-    private int _scanTimeNear = 0;
-
-    @Override
-    @UiThread
-    public void getNearestBeacon(BeaconObject beaconObject) {
-        times.setText(Integer.toString(++_scanTime));
-        distance.setText(Integer.toString(++_scanTimeNear));
-        System.out.println("[getNearestBeacon]" + beaconObject.getMajorMinorString());
-        rssi.setText(Integer.toString(beaconObject.rssi));
-        beacon.setText(beaconObject.getMajorMinorString());
-        _scanResultQueue.offer(beaconObject);
-    }
-
-    @Override
-    public void getCurrentRoundBeacon(ArrayList<BeaconObject> BeaconObjectArray) {
-        System.out.println("[in getCurrentRoundBeacon] = " + BeaconObjectArray.size());
-        eachRoundBeacons.add(BeaconObjectArray);
-        System.out.println("[eachRoundBeacons Size]" + eachRoundBeacons.size());
-
-//        for(int i=0 ; i<eachRoundBeacons.size() ; i++){
-//            for(int j=0;j < eachRoundBeacons.get(i).size() ; j++){
-//                BeaconObject beaconObject = eachRoundBeacons.get(i).get(j);
-//                System.out.println("<" + beaconObject.getMajorMinorString() + "> , " + beaconObject.rssi);
-//            }
-//            System.out.println("-----------");
-//        }
 
     }
 

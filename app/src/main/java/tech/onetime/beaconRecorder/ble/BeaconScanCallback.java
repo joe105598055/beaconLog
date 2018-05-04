@@ -35,7 +35,7 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
     private long lastScannedTime = 0;
     private Timer timer = null;
     private Boolean flag = true;
-    private long firstTime;
+    private long firstBeaconTime;
     public BeaconScanCallback(Context ctx, iBeaconScanCallback scanCallback) {
 
         this.scanCallback = scanCallback;
@@ -49,21 +49,18 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 
         @Override
         public void run() {
-            if(syncBeacons.getIns().getNearest()!=null){
-                scanCallback.getNearestBeacon(syncBeacons.getIns().getNearest());
-                scanCallback.getCurrentRoundBeacon(syncBeacons.getIns().getBeacons());
-            }
-            Log.d(TAG, "TimerTask*******************" + System.currentTimeMillis());
+            scanCallback.getNearestBeacon(syncBeacons.getIns().getNearest());
+            scanCallback.getCurrentRoundBeacon(syncBeacons.getIns().getBeacons());
         }
     }
 
     public void startTimerTask(){
+        Log.d(TAG, "********startTimerTask***********" + System.currentTimeMillis());
+
         timer = new Timer();
         timer.schedule(new timerTask(), 100L,100L);
     }
-    public void startMovingTask(){
 
-    }
 
     public void closeTimerTask(){
         if(timer!=null){
@@ -152,11 +149,10 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
     @Override
     public void kitkat_beaconScanned(BeaconObject beaconObject) {
         if(flag){
-            firstTime = beaconObject.rssi;
+            firstBeaconTime = beaconObject.time;
             flag = false;
         }
-        syncBeacons.getIns().addBeacon(beaconObject,firstTime);
-        syncBeacons.getIns().addBeacon(beaconObject);
+        syncBeacons.getIns().addBeacon(beaconObject,firstBeaconTime);
         scanCallback.scannedBeacons(beaconObject);
         returnCallback();
 
@@ -170,10 +166,10 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
     @Override
     public void lollipop_beaconScanned(BeaconObject beaconObject) {
         if(flag){
-            firstTime = beaconObject.time;
+            firstBeaconTime = beaconObject.time;
             flag = false;
         }
-        syncBeacons.getIns().addBeacon(beaconObject,firstTime);
+        syncBeacons.getIns().addBeacon(beaconObject,firstBeaconTime);
         scanCallback.scannedBeacons(beaconObject);
         returnCallback();
 
@@ -217,7 +213,9 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 //        syncBeacons.getIns().removeAllBeacons();
 
     }
-
+    public void clearAllbeacons(){
+        syncBeacons.getIns().removeAllBeacons();
+    }
 
     private static class syncBeacons {
 
@@ -241,7 +239,7 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 
                 if (beacons.get(i).mac.equals(beaconObject.mac)) {
 //                    if (beacons.get(i).rssi <= beaconObject.rssi) { // 避免收到散反射的
-                    Log.d("OPBeaconScanCallback", "[Cover] = " + beacons.get(i).getMajorMinorString() + "[pre]" + beacons.get(i).rssi + "[post]" + beaconObject.rssi + "[delta]" + (beaconObject.time - beacons.get(i).time));
+//                    Log.d("OPBeaconScanCallback", "[Cover] = " + beacons.get(i).getMajorMinorString() + "[pre]" + beacons.get(i).rssi + "[post]" + beaconObject.rssi + "[delta]" + (beaconObject.time - beacons.get(i).time));
                     beacons.remove(i);
                     beaconObject.time = beaconObject.time - firstTime;
                     beacons.add(beaconObject);
@@ -259,7 +257,7 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
                 if (beacons.get(i).mac.equals(beaconObject.mac)) {
 
 //                    if (beacons.get(i).rssi <= beaconObject.rssi) { // 避免收到散反射的
-                        Log.d("OPBeaconScanCallback", "[Cover] = " + beacons.get(i).getMajorMinorString() + "[pre]" + beacons.get(i).rssi + "[post]" + beaconObject.rssi + "[delta]" + (beaconObject.time - beacons.get(i).time));
+//                        Log.d("OPBeaconScanCallback", "[Cover] = " + beacons.get(i).getMajorMinorString() + "[pre]" + beacons.get(i).rssi + "[post]" + beaconObject.rssi + "[delta]" + (beaconObject.time - beacons.get(i).time));
                         beacons.remove(i);
                         beacons.add(beaconObject);
                         return;
@@ -278,16 +276,16 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 
         }
         public synchronized void removeAllBeacons() {
-            long currentTime = System.currentTimeMillis();
-            for(int i = beacons.size() - 1 ; i >= 0; i--){
-                Log.d("OPBeaconScanCallback", "[R_delta] = " + (currentTime - beacons.get(i).time));
-                if(currentTime - beacons.get(i).time > 2000){ // 因應每隻手機更新頻率
-                    Log.d("OPBeaconScanCallback", "[Remove] = " + beacons.get(i).getMajorMinorString());
-                    beacons.remove(i);
-                }
-            }
+//            long currentTime = System.currentTimeMillis();
+//            for(int i = beacons.size() - 1 ; i >= 0; i--){
+//                Log.d("OPBeaconScanCallback", "[R_delta] = " + (currentTime - beacons.get(i).time));
+//                if(currentTime - beacons.get(i).time > 2000){ // 因應每隻手機更新頻率
+//                    Log.d("OPBeaconScanCallback", "[Remove] = " + beacons.get(i).getMajorMinorString());
+//                    beacons.remove(i);
+//                }
+//            }
 //            if(beacons.size()==4)
-//                beacons.clear();
+                beacons.clear();
         }
 
         public synchronized BeaconObject getNearest() {

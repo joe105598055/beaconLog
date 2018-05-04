@@ -35,7 +35,6 @@ public class ExcelBuilder {
     public static int rowRoundIndex = 1;
 
     public static int colIndex = 0;
-    private static int[] distances = {1, 2, 3, 5, 8, 13, 20, 30, 40, 50};
 
     public static void initExcel() {
 
@@ -44,6 +43,10 @@ public class ExcelBuilder {
             _wb.createSheet("RSSI");
             _wb.createSheet("Beacon");
         }
+        rowIndex = 1;
+        rowRoundIndex = 1;
+        colIndex = 0;
+
         Sheet RSSISheet = _wb.getSheet("RSSI");
         RSSISheet.createRow(0).createCell(0).setCellValue("Nearest");
         RSSISheet.getRow(0).createCell(1).setCellValue("rssi");
@@ -57,16 +60,6 @@ public class ExcelBuilder {
         RSSISheet.getRow(0).createCell(17).setCellValue("(8,5)");         RSSISheet.getRow(0).createCell(18).setCellValue("(8,5)_time");
         RSSISheet.getRow(0).createCell(19).setCellValue("(8,8)");         RSSISheet.getRow(0).createCell(20).setCellValue("(8,8)_time");
 
-//
-//        RSSISheet.getRow(0).createCell(4).setCellValue("(0,5)");
-//        RSSISheet.getRow(0).createCell(5).setCellValue("(0,8)");
-//        RSSISheet.getRow(0).createCell(6).setCellValue("(5,0)");
-//        RSSISheet.getRow(0).createCell(7).setCellValue("(5,5)");
-//        RSSISheet.getRow(0).createCell(8).setCellValue("(5,8)");
-//        RSSISheet.getRow(0).createCell(9).setCellValue("(8,0)");
-//        RSSISheet.getRow(0).createCell(10).setCellValue("(8,5)");
-//        RSSISheet.getRow(0).createCell(11).setCellValue("(8,8)");
-
     }
 
     public static void clearExcel() {
@@ -78,8 +71,12 @@ public class ExcelBuilder {
     public static void setCellByRowInOrder(BeaconObject content) {
 
         Sheet RSSISheet = _wb.getSheet("RSSI");
-        RSSISheet.createRow(rowIndex).createCell(colIndex).setCellValue("[" + content.major + "," + content.minor + "]");
-        RSSISheet.getRow(rowIndex).createCell(1).setCellValue(content.rssi);
+        if(content == null){
+            RSSISheet.createRow(rowIndex).createCell(colIndex).setCellValue("[not found]");
+        }else{
+            RSSISheet.createRow(rowIndex).createCell(colIndex).setCellValue("[" + content.major + "," + content.minor + "]");
+            RSSISheet.getRow(rowIndex).createCell(1).setCellValue(content.rssi);
+        }
         rowIndex++;
     }
 

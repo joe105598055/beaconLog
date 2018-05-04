@@ -85,7 +85,7 @@
         android:textSize="22sp"
         android:layout_marginTop="17dp"
         android:clickable="false"
-        android:text="@string/txpower_lable"
+        android:text="檔名:"
         android:layout_below="@+id/distance_lable"
         android:layout_alignStart="@+id/distance_lable" />
 
@@ -168,6 +168,17 @@
         android:layout_alignBaseline="@+id/beacon_lable"
         android:layout_alignBottom="@+id/beacon_lable"
         android:layout_alignStart="@+id/times" />
+
+    <EditText
+        android:id="@+id/fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text=""
+        android:layout_alignBaseline="@+id/txPower"
+        android:layout_alignBottom="@+id/txPower"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>
