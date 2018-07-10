@@ -225,28 +225,25 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
 
     }
 
+    private long previousTime = -1;
     @Override
     @UiThread
     public void getNearestBeacon(BeaconObject beaconObject) {
+        Log.d(TAG, "getNearestBeacon");
+        times.setText(Integer.toString(++_scanTime));
+
         if(beaconObject!=null){
             System.out.println("[getNearestBeacon]" + beaconObject.getMajorMinorString());
             rssi.setText(Integer.toString(beaconObject.rssi));
             beacon.setText(beaconObject.getMajorMinorString());
-        }
-        _scanResultQueue.offer(beaconObject);
-    }
-
-    @Override
-    @UiThread
-    public void getCurrentRoundBeacon(ArrayList<BeaconObject> BeaconObjectArray) {
-        times.setText(Integer.toString(++_scanTime));
-
-        System.out.println("[in getCurrentRoundBeacon] = " + BeaconObjectArray.size());
-        if(BeaconObjectArray.size()!=0){
-            eachRoundBeacons.add(BeaconObjectArray);
+            if(previousTime != beaconObject.time){
+                _scanResultQueue.offer(beaconObject);
+                previousTime = beaconObject.time;
+            }
         }
 
-        if (_scanTime >= 21) {
+
+        if (_scanTime >= 100) {
 
             stopScan.setVisibility(View.GONE);
 
@@ -259,6 +256,32 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
             _beaconCallback.closeTimerTask();
 
         }
+
+    }
+
+    @Override
+    @UiThread
+    public void getCurrentRoundBeacon(ArrayList<BeaconObject> BeaconObjectArray) {
+//        times.setText(Integer.toString(++_scanTime));
+//
+//        System.out.println("[in getCurrentRoundBeacon] = " + BeaconObjectArray.size());
+//        if(BeaconObjectArray.size()!=0){
+//            eachRoundBeacons.add(BeaconObjectArray);
+//        }
+
+//        if (_scanTime >= 100) {
+//
+//            stopScan.setVisibility(View.GONE);
+//
+//            storeResult.setVisibility(View.VISIBLE);
+//            cleanUp.setVisibility(View.VISIBLE);
+//
+//            rssi.setTextColor(getResources().getColor(R.color.red_500));
+//
+//            _beaconCallback.stopScan();
+//            _beaconCallback.closeTimerTask();
+//
+//        }
 
     }
 

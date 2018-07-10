@@ -154,7 +154,7 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
         }
         syncBeacons.getIns().addBeacon(beaconObject,firstBeaconTime);
         scanCallback.scannedBeacons(beaconObject);
-        returnCallback();
+//        returnCallback();
 
     }
 
@@ -163,15 +163,19 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
      *
      * @param beaconObject  is the object include beacon attribute
      */
+    public long preTime = 0;
     @Override
     public void lollipop_beaconScanned(BeaconObject beaconObject) {
         if(flag){
             firstBeaconTime = beaconObject.time;
             flag = false;
         }
+        long delta = beaconObject.time - preTime;
+        preTime = beaconObject.time;
+        Log.d(TAG, "[delta] = " + delta + "------" + beaconObject.getMajorMinorString() + "---" + beaconObject.rssi);
         syncBeacons.getIns().addBeacon(beaconObject,firstBeaconTime);
-        scanCallback.scannedBeacons(beaconObject);
-        returnCallback();
+//        scanCallback.scannedBeacons(beaconObject);
+//        returnCallback();
 
     }
 
@@ -201,7 +205,7 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
     }
 
 
-    private  void returnCallback(){
+//    private  void returnCallback(){
 //        if (!canReturnCallback()){
 ////            System.out.println("[delay]");
 //            return;
@@ -211,8 +215,7 @@ public class BeaconScanCallback implements KitkatScanCallback.iKitkatScanCallbac
 //            scanCallback.getCurrentRoundBeacon(syncBeacons.getIns().getBeacons());
 //        }
 //        syncBeacons.getIns().removeAllBeacons();
-
-    }
+//    }
     public void clearAllbeacons(){
         syncBeacons.getIns().removeAllBeacons();
     }
