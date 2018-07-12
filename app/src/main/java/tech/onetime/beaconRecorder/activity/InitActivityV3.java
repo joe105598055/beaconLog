@@ -243,7 +243,7 @@ public class InitActivityV3 extends AppCompatActivity implements BeaconScanCallb
         }
 
 
-        if (_scanTime >= 100) {
+        if (_scanTime >= 600) {
 
             stopScan.setVisibility(View.GONE);
 
